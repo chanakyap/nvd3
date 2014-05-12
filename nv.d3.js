@@ -5447,7 +5447,7 @@ nv.models.legend2 = function () {
             var pie = d3.layout.pie()
                 .sort(null)
                 .value(function (d) {
-                    return 1
+                    return 1;
                 });
 
             var wrap = container.selectAll('g.nv-legend').data([data]);
@@ -5457,7 +5457,7 @@ nv.models.legend2 = function () {
             wrap.attr('transform', 'translate(' + margin.left + ',0)');
 
             //------------------------------------------------------------
-            wrap.append('rect');
+            gEnter.append('rect');
             var pi = wrap.selectAll(".arc")
                 .data(pie(data))
                 .enter().append("g")
@@ -5470,14 +5470,16 @@ nv.models.legend2 = function () {
                 })
                 .style('stroke', 'white')
                 .style('stroke-width', '0.3');
-            wrap.append('text')
+            gEnter.append('text')
                 .attr('text-anchor', 'start')
+                .attr('stroke','none')
+                .attr('fill-opacity','1')
                 .attr('class', 'nv-legend-text')
                 .attr('dy', '.32em')
                 .attr('dx', '8')
                 .text(title);
             var LegendText = wrap.select('text').node();
-            wrap.select('rect')
+            gEnter.select('rect')
                 .attr('transform', 'translate(-8,-10)')
                 .style('fill', '#ECECEE')
                 .attr('width', (LegendText.getComputedTextLength() + 28))
@@ -6310,10 +6312,27 @@ nv.models.line2 = function () {
                 .data(function (d) {
                     return [d.values];
                 });
-            if (d3.selectAll('text.label')[0].length) {
-                d3.selectAll('text.label').remove();
-            }
-            var lineLabels = groups.append('text')
+//            if (d3.selectAll('text.label')[0].length) {
+//                d3.selectAll('text.label').remove();
+//            }
+
+            var lineLabels =
+                groups
+                .selectAll('text.label')
+                .attr('transform', function (d, i) {
+                    if (d.values[0]) {
+                        return 'translate(' + (margin.left + x(d.values[0][0])) + ',' + (y(d.values[0][1]) - 2) + ')';
+                    }
+                })
+                .text(function (d) {
+                    return d.label;
+                })
+                    .data(function(d){
+                        return [d];
+                    });
+
+            lineLabels.enter()
+                .append('text')
                 .attr('stroke','none')
                 .attr('fill-opacity','1')
                 .style('font-size', '11px')
@@ -6326,6 +6345,7 @@ nv.models.line2 = function () {
                 .text(function (d) {
                     return d.label;
                 });
+            lineLabels.exit().remove();
             linePaths.enter().append('path')
                 .attr('class', 'nv-line')
                 .attr('d',
@@ -7070,15 +7090,19 @@ nv.models.linechart2 = function () {
 
             //------------------------------------------------------------
             // Setup containers and skeleton of chart
-            if(d3.select('text.unit')[0].length){
-                 d3.select('text.unit').remove();
-            }
-            var unitE = container.append('text')
-                .attr('class','unit')
-                .attr('transform','translate('+(margin.left + tickPadding)+',10)')
-                .text(unit);
+//            if(d3.select('text.unit')[0].length){
+//                 d3.select('text.unit').remove();
+//            }
+//            var unitE = container.append('text')
+//                .attr('class','unit')
+//                .attr('transform','translate('+(margin.left + tickPadding)+',10)')
+//                .text(unit);
             var wrap = container.selectAll('g.nv-wrap.nv-lineChart').data([data]);
             var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-lineChart').append('g');
+            gEnter.append('text')
+                .attr('class','unit')
+                .attr('transform','translate(-10,-10)')
+                .text(unit);
             var g = wrap.select('g');
 
 
@@ -7121,7 +7145,7 @@ nv.models.linechart2 = function () {
             if (rightAlignYAxis) {
                 g.select(".nv-y.nv-axis")
                     .attr("transform", "translate(" + availableWidth + ",0)");
-                d3.select('text.unit').attr("transform", "translate(" + (availableWidth+margin.left+tickPadding)+ ",10)");
+                d3.select('text.unit').attr("transform", "translate(" + (availableWidth+tickPadding)+ ",-15)");
             }
 
             //------------------------------------------------------------
