@@ -5458,18 +5458,21 @@ nv.models.legend2 = function () {
 
             //------------------------------------------------------------
             gEnter.append('rect');
-            var pi = wrap.selectAll(".arc")
+            var pi = wrap.selectAll("path.arc")
                 .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
+                .attr("d", arc);
 
-            pi.append("path")
+            pi.enter()
+                .append("path")
+                .attr("class", "arc")
                 .attr("d", arc)
+                .style('stroke', 'white')
+                .style('stroke-width', '0.3')
                 .style("fill", function (d, i) {
                     return colors[i];
-                })
-                .style('stroke', 'white')
-                .style('stroke-width', '0.3');
+                });
+
+            pi.exit().remove();
             gEnter.append('text')
                 .attr('text-anchor', 'start')
                 .attr('stroke','none')
@@ -6998,8 +7001,8 @@ nv.models.linechart2 = function () {
             var cls = 'c-'+chart.id()+'-x-'+ e.pointIndex;
             var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
             top = e.pos[1],
-            leftX = e.pos[0],
-            topX = y.range()[0] + margin.top + ( (offsetElement.offsetTop + offsetElement.marginTop) || 0),
+            leftX = e.pos[0]+4,
+            topX = y.range()[0] + margin.top +9,
             leftY = x.range()[1] + margin.left + tickPadding ,
             topY = e.pos[1],
             xVal = xAxis.tickFormat()(lines.x()(e.point, e.pointIndex)),
@@ -7100,7 +7103,7 @@ nv.models.linechart2 = function () {
             var wrap = container.selectAll('g.nv-wrap.nv-lineChart').data([data]);
             var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-lineChart').append('g');
             gEnter.append('text')
-                .attr('class','unit')
+                .attr('class','unit '+'chart-'+chart.id())
                 .attr('transform','translate(-10,-10)')
                 .text(unit);
             var g = wrap.select('g');
@@ -7145,7 +7148,7 @@ nv.models.linechart2 = function () {
             if (rightAlignYAxis) {
                 g.select(".nv-y.nv-axis")
                     .attr("transform", "translate(" + availableWidth + ",0)");
-                d3.select('text.unit').attr("transform", "translate(" + (availableWidth+tickPadding)+ ",-15)");
+                d3.select('text.unit.chart-'+chart.id()).attr("transform", "translate(" + (availableWidth+tickPadding)+ ",-15)");
             }
 
             //------------------------------------------------------------

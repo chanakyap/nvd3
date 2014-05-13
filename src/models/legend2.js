@@ -42,7 +42,7 @@ nv.models.legend2 = function () {
             var pie = d3.layout.pie()
                 .sort(null)
                 .value(function (d) {
-                    return 1
+                    return 1;
                 });
 
             var wrap = container.selectAll('g.nv-legend').data([data]);
@@ -52,27 +52,32 @@ nv.models.legend2 = function () {
             wrap.attr('transform', 'translate(' + margin.left + ',0)');
 
             //------------------------------------------------------------
-            wrap.append('rect');
-            var pi = wrap.selectAll(".arc")
+            gEnter.append('rect');
+            var pi = wrap.selectAll("path.arc")
                 .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
+                .attr("d", arc);
 
-            pi.append("path")
+            pi.enter()
+                .append("path")
+                .attr("class", "arc")
                 .attr("d", arc)
+                .style('stroke', 'white')
+                .style('stroke-width', '0.3')
                 .style("fill", function (d, i) {
                     return colors[i];
-                })
-                .style('stroke', 'white')
-                .style('stroke-width', '0.3');
-            wrap.append('text')
+                });
+
+            pi.exit().remove();
+            gEnter.append('text')
                 .attr('text-anchor', 'start')
+                .attr('stroke','none')
+                .attr('fill-opacity','1')
                 .attr('class', 'nv-legend-text')
                 .attr('dy', '.32em')
                 .attr('dx', '8')
                 .text(title);
             var LegendText = wrap.select('text').node();
-            wrap.select('rect')
+            gEnter.select('rect')
                 .attr('transform', 'translate(-8,-10)')
                 .style('fill', '#ECECEE')
                 .attr('width', (LegendText.getComputedTextLength() + 28))

@@ -185,10 +185,27 @@ nv.models.line2 = function () {
                 .data(function (d) {
                     return [d.values];
                 });
-            if (d3.selectAll('text.label')[0].length) {
-                d3.selectAll('text.label').remove();
-            }
-            var lineLabels = groups.append('text')
+//            if (d3.selectAll('text.label')[0].length) {
+//                d3.selectAll('text.label').remove();
+//            }
+
+            var lineLabels =
+                groups
+                .selectAll('text.label')
+                .attr('transform', function (d, i) {
+                    if (d.values[0]) {
+                        return 'translate(' + (margin.left + x(d.values[0][0])) + ',' + (y(d.values[0][1]) - 2) + ')';
+                    }
+                })
+                .text(function (d) {
+                    return d.label;
+                })
+                    .data(function(d){
+                        return [d];
+                    });
+
+            lineLabels.enter()
+                .append('text')
                 .attr('stroke','none')
                 .attr('fill-opacity','1')
                 .style('font-size', '11px')
@@ -201,6 +218,7 @@ nv.models.line2 = function () {
                 .text(function (d) {
                     return d.label;
                 });
+            lineLabels.exit().remove();
             linePaths.enter().append('path')
                 .attr('class', 'nv-line')
                 .attr('d',

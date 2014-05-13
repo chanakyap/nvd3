@@ -52,13 +52,26 @@
   content:"";
    position: absolute;
    right: 100%;
-   top: 4px;
+   top: 5px;
    width: 0;
    height: 0;
    border-top: 7px solid transparent;
    border-right: 9px solid #ffda40;
    border-right-color: inherit;
-   border-bottom: 7px solid transparent;}
+   border-bottom: 7px solid transparent;
+}
+.nvtooltip.x-nvtooltip:before{
+    content: "";
+    position: absolute;
+    left: 31%;
+    top:-9px;
+    width: 0;
+    height: 0;
+    border-bottom: 9px solid #ffda40;
+    border-bottom-color: inherit ;
+    border-right: 7px solid transparent;
+    border-left: 7px solid transparent;
+}
 
 /*Give tooltips that old fade in transition by
     putting a "with-transitions" class on the container div.

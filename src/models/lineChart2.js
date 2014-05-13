@@ -61,10 +61,10 @@ nv.models.linechart2 = function () {
             var cls = 'c-'+chart.id()+'-x-'+ e.pointIndex;
             var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ),
             top = e.pos[1],
-            leftX = e.pos[0],
-            topX = y.range()[0] + margin.top + ( (offsetElement.offsetTop + offsetElement.marginTop) || 0),
+            leftX = e.pos[0]+4,
+            topX = y.range()[0] + margin.top +9,
             leftY = x.range()[1] + margin.left + tickPadding ,
-            topY = e.pos[1] + ( offsetElement.offsetTop || 0),
+            topY = e.pos[1],
             xVal = xAxis.tickFormat()(lines.x()(e.point, e.pointIndex)),
             yVal = yAxis.tickFormat()(lines.y()(e.point, e.pointIndex));
             if (tooltipX != null)
@@ -153,15 +153,19 @@ nv.models.linechart2 = function () {
 
             //------------------------------------------------------------
             // Setup containers and skeleton of chart
-            if(d3.select('text.unit')[0].length){
-                 d3.select('text.unit').remove();
-            }
-            var unitE = container.append('text')
-                .attr('class','unit')
-                .attr('transform','translate('+(margin.left + tickPadding)+',10)')
-                .text(unit);
+//            if(d3.select('text.unit')[0].length){
+//                 d3.select('text.unit').remove();
+//            }
+//            var unitE = container.append('text')
+//                .attr('class','unit')
+//                .attr('transform','translate('+(margin.left + tickPadding)+',10)')
+//                .text(unit);
             var wrap = container.selectAll('g.nv-wrap.nv-lineChart').data([data]);
             var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-lineChart').append('g');
+            gEnter.append('text')
+                .attr('class','unit '+'chart-'+chart.id())
+                .attr('transform','translate(-10,-10)')
+                .text(unit);
             var g = wrap.select('g');
 
 
@@ -204,7 +208,7 @@ nv.models.linechart2 = function () {
             if (rightAlignYAxis) {
                 g.select(".nv-y.nv-axis")
                     .attr("transform", "translate(" + availableWidth + ",0)");
-                d3.select('text.unit').attr("transform", "translate(" + (availableWidth+margin.left+tickPadding)+ ",10)");
+                d3.select('text.unit.chart-'+chart.id()).attr("transform", "translate(" + (availableWidth+tickPadding)+ ",-15)");
             }
 
             //------------------------------------------------------------
